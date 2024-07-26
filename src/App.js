@@ -1,64 +1,71 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
+  const [value, setValue] = useState(Array(9).fill(null));
+  const [currentTurn, setCurrentTurn] = useState("X");
+  const [lastClicked, setLastClicked] = useState(null);
 
-  const [value,setvalue]=useState((Array(9).fill(null)))
-  console.log(value)
-  const [currentTurn,setcurrentTurn]=useState("X")
+  const checkwinner = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
 
-  const checkwinner=[
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [2,4,6]
-  ]
-  
-  const Turn = ((index)=> {
-    let Array = value
-    console.log("We had clicked on cell",index,value)
-    if(Array[index]===null){
-      Array[index]=currentTurn
-      setvalue(Array)
-      for(let i=0; i<checkwinner.length;i++){
-        const [a,b,c]=checkwinner[i]
-        if(value[a]!==null && value[a]==value[b] && value[c]==value[b]){
-          alert(`${currentTurn} is won the game`)
-        }
+  useEffect(() => {
+    if (lastClicked === null) return;
+
+    const newValue = [...value];
+    newValue[lastClicked] = currentTurn;
+    setValue(newValue);
+
+    for (let i = 0; i < checkwinner.length; i++) {
+      const [a, b, c] = checkwinner[i];
+      if (newValue[a] !== null && newValue[a] === newValue[b] && newValue[a] === newValue[c]) {
+        alert(`${currentTurn} has won the game`);
+        return;
       }
-
-      setcurrentTurn(currentTurn==="X" ? "O" : "X")
     }
 
-  });
+    setCurrentTurn(currentTurn === "X" ? "O" : "X");
+  }, [lastClicked]);
 
-
+  const handleClick = (index) => {
+    if (value[index] === null) {
+      setLastClicked(index);
+    }
+  };
 
   return (
     <div className='App'>
       <h1>Tic-Tac-Toe</h1>
       <div className="game-board">
         <div className="row">
-          <div className="cell" >
-            <div className="cell-content" onClick={() => Turn(0)}>{value[0]}</div>
-            <div className="cell-content" onClick={() => Turn(1)}>{value[1]}</div>
-            <div className="cell-content" onClick={() => Turn(2)}>{value[2]}</div>
-          </div>
-            <div className="cell" >
-              <div className="cell-content" onClick={() => Turn(3)}>{value[3]}</div>
-              <div className="cell-content" onClick={() => Turn(4)}>{value[4]}</div>
-              <div className="cell-content" onClick={() => Turn(5)}>{value[5]}</div>
-          </div>
-          <div className="cell" >
-            <div className="cell-content" onClick={() => Turn(6)}>{value[6]}</div>
-            <div className="cell-content" onClick={() => Turn(7)}>{value[7]}</div>
-            <div className="cell-content" onClick={() => Turn(8)}>{value[8]}</div>
-          </div>
+          {[0, 1, 2].map(index => (
+            <div className="cell" key={index} onClick={() => handleClick(index)}>
+              <div className="cell-content">{value[index]}</div>
+            </div>
+          ))}
+        </div>
+        <div className="row">
+          {[3, 4, 5].map(index => (
+            <div className="cell" key={index} onClick={() => handleClick(index)}>
+              <div className="cell-content">{value[index]}</div>
+            </div>
+          ))}
+        </div>
+        <div className="row">
+          {[6, 7, 8].map(index => (
+            <div className="cell" key={index} onClick={() => handleClick(index)}>
+              <div className="cell-content">{value[index]}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
