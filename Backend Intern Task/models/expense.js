@@ -25,6 +25,12 @@ const expenseSchema = new schema({
                 type: Number, 
                 required: true 
             }
-          }
-    ]
+        }
+    ],
+    date : {
+        type : Date,
+        default : Date.now
+    }
 })
+
+module.exports = mongoose.model('Expense',expenseSchema);
