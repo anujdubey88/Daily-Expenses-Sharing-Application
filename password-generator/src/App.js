@@ -3,7 +3,10 @@ import './App.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 function App() {
-  const [length,setlength]=useState(6);
+  const [length,setlength]=useState(()=>{
+    console.log("length is changed")
+    return 6;
+  });
   const [charAllowed ,setcharAllowed]=useState(false);
   const [intAllowed, setintAllowed]=useState(false)
 
@@ -24,19 +27,8 @@ function App() {
 
 
   const copypassword = useCallback(() => {
-    const input = passwordRef.current;
-    if (input && input.select) {
-      input.select();
-      window.navigator.clipboard.writeText(password)
-        .then(() => {
-          console.log('Password copied to clipboard!');
-        })
-        .catch((err) => {
-          console.error('Failed to copy password: ', err);
-        });
-    } else {
-      console.error('passwordRef.current is not an input element');
-    }
+    // passwordRef.current?.select();
+    window.navigator.clipboard.writeText(password)
   }, [password]);
 
   useEffect(()=>{
